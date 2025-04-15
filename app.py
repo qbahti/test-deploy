@@ -3,7 +3,6 @@ import json
 import os
 from datetime import datetime
 import uuid
-import requests
 
 app = Flask(__name__)
 app.secret_key = 'any_secret_key'  # сессия үшін міндетті
