@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <title>Мұғалім панелі</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 40px;
+      background-color: #f2f9ff;
+    }
+    h2, h3 {
+      color: #1565c0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: white;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    th {
+      background-color: #e3f2fd;
+    }
+    form {
+      margin-top: 30px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.05);
+      max-width: 500px;
+    }
+    input[type="file"] {
+      margin-bottom: 10px;
+    }
+    button {
+      background-color: #1976d2;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #0f5bb5;
+    }
+    ul {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <a href="/teacher/add_test" class="btn btn-outline-primary btn-lg">
+    ➕ Жаңа тест құрастыру
+  </a>
+  
+  
+
+  <h3>📤 Жаңа тест (.json) жүктеу</h3>
+  <form action="/teacher/upload_test" method="POST" enctype="multipart/form-data">
+    <input type="file" name="test_file" accept=".json" required>
+    <br>
+    <button type="submit">Жүктеу</button>
+  </form>
+  
+  {% if test_files %}
+    <h3>📂 Жүктелген тесттер</h3>
+    <ul>
+      {% for f in test_files %}
+        <li>{{ f }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <h3 class="mt-4 mb-3">📊 Оқушылар нәтижесі</h3>
+
+  {% if results %}
+    <table class="table table-bordered table-striped">
+      <thead class="table-primary">
+        <tr>
+          <th>№</th>
+          <th>Аты</th>
+          <th>Пән</th>
+          <th>Ұпай</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in results %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ r.name }}</td>
+          <td>{{ r.subject }}</td>
+          <td>{{ r.score }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Нәтижелер әлі жоқ.</p>
+  {% endif %}
+  
+</body>
+</html>

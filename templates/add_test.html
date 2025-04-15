@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <title>Жаңа тест енгізу</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body { background-color: #f0f8ff; padding: 40px; font-family: sans-serif; }
+    .question-block { border: 1px solid #ccc; padding: 20px; margin-bottom: 20px; border-radius: 10px; background-color: white; }
+    .option-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; align-items: center; }
+    .option-group input[type="text"] { flex: 1; }
+    .question-header { display: flex; justify-content: space-between; align-items: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 class="mb-4 text-primary">📝 Жаңа тест енгізу</h2>
+    <form method="POST" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label class="form-label">Пәнді таңдаңыз</label>
+        <select class="form-select" name="subject" required>
+          <option value="Информатика">Информатика</option>
+          <option value="Қазақстан тарихы">Қазақстан тарихы</option>
+        </select>
+      </div>
+
+      <div id="questions-area"></div>
+
+      <button type="button" class="btn btn-outline-primary" onclick="addQuestion()">+ Сұрақ қосу</button>
+      <button type="submit" class="btn btn-success float-end">💾 Сақтау</button>
+    </form>
+  </div>
+
+  <script>
+    let questionIndex = 0;
+
+    function addQuestion() {
+      const container = document.getElementById('questions-area');
+
+      const questionHTML = `
+        <div class="question-block" id="qblock_${questionIndex}">
+          <div class="question-header">
+            <h5>Сұрақ ${questionIndex + 1}</h5>
+            <button type="button" class="btn btn-sm btn-danger" onclick="removeQuestion(${questionIndex})">❌</button>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Сұрақ мәтіні</label>
+            <textarea class="form-control" name="question_${questionIndex}" required></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Сұрақ суреті (қаласаңыз)</label>
+            <input type="file" class="form-control" name="image_${questionIndex}" accept="image/*">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Жауаптар:</label>
+            <div id="options_${questionIndex}"></div>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addOption(${questionIndex})">+ Вариант</button>
+          </div>
+        </div>
+      `;
+
+      container.insertAdjacentHTML('beforeend', questionHTML);
+      addOption(questionIndex);
+      addOption(questionIndex);
+      questionIndex++;
+    }
+
+    function removeQuestion(index) {
+      const qBlock = document.getElementById(`qblock_${index}`);
+      if (qBlock) qBlock.remove();
+    }
+
+    function addOption(qIdx) {
+      const optionsDiv = document.getElementById(`options_${qIdx}`);
+      const optionCount = optionsDiv.children.length;
+
+      const html = `
+        <div class="option-group">
+          <input type="radio" name="correct_${qIdx}" value="${optionCount}" required>
+          <input type="text" class="form-control" name="option_${qIdx}_${optionCount}" placeholder="Жауап нұсқасы" required>
+          <input type="file" class="form-control" name="option_img_${qIdx}_${optionCount}" accept="image/*">
+        </div>
+      `;
+
+      optionsDiv.insertAdjacentHTML('beforeend', html);
+    }
+    
+  </script>
+  
+</body>
+</html>
