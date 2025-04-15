@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <title>Тест нәтижесі</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      margin: 0;
+      background-color: #f2f9ff;
+      color: #222;
+      font-size: 18px;
+      user-select: none;
+    }
+    .header {
+      background-color: #1976d2;
+      color: white;
+      padding: 14px;
+      font-size: 20px;
+      font-weight: 500;
+    }
+    .result-box {
+      max-width: 1000px;
+      margin: 60px auto;
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 14px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    }
+    .score {
+      font-size: 40px;
+      font-weight: bold;
+      color: #2e7d32;
+      margin: 20px 0;
+    }
+    .info {
+      font-size: 20px;
+      margin: 10px 0;
+    }
+    .back-btn {
+      margin-top: 30px;
+      padding: 12px 28px;
+      font-size: 18px;
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .back-btn:hover {
+      background-color: #115293;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">Нәтиже беті</div>
+  <div class="result-box">
+    <h2>Тест аяқталды!</h2>
+    <div class="score">Ұпай: {{ score }} / 30</div>
+    <div class="info">Қатысушы: <strong>{{ name }}</strong></div>
+    <div class="info">Пән: <strong>{{ subject }}</strong></div>
+    <button class="back-btn" onclick="window.location.href='/'">Басты бетке</button>
+  </div>
+
+  <script>
+    document.addEventListener('copy', function(e) {
+      e.preventDefault();
+      alert("Мәтінді көшіруге болмайды!");
+    });
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+    });
+    document.addEventListener('selectstart', function(e) {
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>
