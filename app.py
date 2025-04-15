@@ -31,7 +31,7 @@ def start_test():
         return render_template('index.html', error="Құпия код дұрыс емес!", subjects=SUBJECTS)
 
     # Тест сұрақтарын жүктеу
-    filename = 'questions_informatika.json' if subject == 'Информатика' else 'questions_tarikh.json'
+    filename = 'data/questions_informatika.json' if subject == 'Информатика' else 'data/questions_tarikh.json'
     with open(f'./{filename}', 'r', encoding='utf-8') as f:
         questions = json.load(f)
 
