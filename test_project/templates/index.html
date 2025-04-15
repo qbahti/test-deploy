@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <title>Тестті бастау</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #e3f2fd, #ffffff);
+      margin: 0;
+      padding: 0;
+      font-size: 18px;
+      user-select: none;
+    }
+    .main-container {
+      max-width: 500px;
+      margin: 80px auto;
+      background-color: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .main-container img {
+      max-width: 120px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      color: #1565c0;
+      margin-bottom: 30px;
+    }
+    label {
+      display: block;
+      text-align: left;
+      margin-top: 20px;
+      font-weight: 500;
+    }
+    input[type="text"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 30px;
+      width: 100%;
+      padding: 14px;
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      font-size: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1565c0;
+    }
+    .error-message {
+      color: red;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    
+    <h1>Байқау сынағы</h1>
+    <form action="/start" method="post" onsubmit="return validateAccessCode()">
+      <label for="name">Атыңызды енгізіңіз:</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="subject">Пәнді таңдаңыз:</label>
+      <select id="subject" name="subject" required>
+        {% for subj in subjects %}
+          <option value="{{ subj }}">{{ subj }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="access_code">Құпия код:</label>
+      <input type="password" id="access_code" name="access_code" required>
+
+      <button type="submit">Тестті бастау</button>
+    </form>
+    <div style="text-align:right; margin-top: 20px;">
+      <a href="/teacher/login" style="
+        color: #1976d2;
+        font-weight: bold;
+        text-decoration: none;
+      ">🧑‍🏫 Мұғалімге кіру</a>
+    </div>
+    <img src="/static/logo.png" alt="Логотип" width="80px">
+    {% if error %}
+      <p class="error-message">{{ error }}</p>
+    {% endif %}
+  </div>
+
+  <script>
+    function validateAccessCode() {
+      const subject = document.getElementById('subject').value;
+      const code = document.getElementById('access_code').value;
+
+      const codes = {
+        'Информатика': 'inf2024',
+        'Қазақстан тарихы': 'tar2024'
+      };
+
+      if (codes[subject] && codes[subject] !== code) {
+        alert("Құпия код дұрыс емес!");
+        return false;
+      }
+
+      return true;
+    }
+
+    // Көшіруді бұғаттау
+    document.addEventListener('copy', function(e) {
+      e.preventDefault();
+      alert("Мәтінді көшіруге болмайды!");
+    });
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+    });
+    document.addEventListener('selectstart', function(e) {
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>

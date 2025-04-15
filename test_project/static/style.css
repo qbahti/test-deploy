@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <title>Тест</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2f9ff;
+      font-size: 18px;
+      user-select: none;
+    }
+    header {
+      background-color: #1976d2;
+      color: white;
+      padding: 14px 20px;
+      font-weight: 500;
+      text-align: center;
+      font-size: 20px;
+      position: relative;
+    }
+    .timer {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: #1565c0;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #ffeb3b;
+      box-shadow: 0 0 8px rgba(0,0,0,0.2);
+    }
+    @media print {
+      body {
+        filter: brightness(0.02) !important;
+      }
+    }
+    .question-nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      padding: 14px;
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .nav-btn {
+      background-color: #bbdefb;
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 17px;
+      transition: 0.2s;
+    }
+    .nav-btn:hover {
+      background-color: #64b5f6;
+    }
+    .nav-btn.active {
+      background-color: #1976d2;
+      color: white;
+    }
+    .nav-btn.answered {
+      background-color: #2e7d32;
+      color: white;
+    }
+    .container {
+      width: 98%;
+      max-width: 1400px;
+      margin: 30px auto;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 60px 70px;
+      font-size: 18px;
+    }
+    .question {
+      display: none;
+      background-color: #f7faff;
+      border: 1px solid #cce3f6;
+      border-radius: 12px;
+      padding: 40px 60px;
+      box-shadow: inset 0 0 8px rgba(0,0,0,0.03);
+      font-size: 18px;
+      text-align: left;
+    }
+    .question.active {
+      display: block;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .question-title {
+      font-size: 22px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      text-align: left;
+    }
+    .question label {
+      display: block;
+      padding: 14px 22px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      border: 1px solid #e0e0e0;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-size: 18px;
+    }
+    .question label:hover {
+      background-color: #eef5ff;
+    }
+    .navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+    .navigation button {
+      background-color: #1976d2;
+      border: none;
+      color: white;
+      padding: 12px 24px;
+      font-size: 18px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .navigation button:hover:not(:disabled) {
+      background-color: #115293;
+    }
+    .navigation button:disabled {
+      background-color: #b0bec5;
+      cursor: not-allowed;
+    }
+    .submit-btn {
+      display: block;
+      margin: 40px auto 0;
+      background-color: #1976d2;
+      border: none;
+      color: white;
+      padding: 16px 32px;
+      font-size: 20px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    Тест тапсырушы: {{ name }}
+    <span class="timer" id="timer">40:00</span>
+  </header>
+
+  <div class="question-nav">
+    {% for i in range(1, 31) %}
+      <button class="nav-btn" id="btn{{ i }}" onclick="showQuestion({{ i }})">{{ i }}</button>
+    {% endfor %}
+  </div>
+
+  <div class="container">
+    <form id="test-form">
+      <h2 style="text-align:center; font-size: 26px; margin-bottom: 30px;">Бөлім: {{ subject }}</h2>
+      {% for q in questions.single %}
+        {% set q_index = loop.index0 %}
+        <div class="question {% if loop.index == 1 %}active{% endif %}" id="q{{ loop.index }}" data-answer="{{ q.answer }}">
+          <p class="question-title">Сұрақ №{{ loop.index }}</p>
+          <p style="font-size: 19px; text-align: left; margin-bottom: 25px;">{{ q.question }}</p>
+          {% for option in q.options %}
+            <label><input type="radio" name="single_{{ q_index }}" value="{{ loop.index }}" onchange="markAnswered({{ q_index + 1 }})" required> {{ option }}</label>
+          {% endfor %}
+          <div class="navigation">
+            <button type="button" onclick="showQuestion({{ loop.index - 1 }})" {% if loop.index == 1 %}disabled{% endif %}>Артқа</button>
+            <button type="button" onclick="showQuestion({{ loop.index + 1 }})" {% if loop.index == 30 %}disabled{% endif %}>Келесі сұрақ</button>
+          </div>
+        </div>
+      {% endfor %}
+      <button type="submit" class="submit-btn">Тестті аяқтау</button>
+    </form>
+  </div>
+
+  <script>
+    let currentQuestion = 1;
+
+    function showQuestion(index) {
+      if (index < 1 || index > 30) return;
+      currentQuestion = index;
+      document.querySelectorAll('.question').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      const questionEl = document.getElementById('q' + index);
+      const buttonEl = document.getElementById('btn' + index);
+      if (questionEl && buttonEl) {
+        questionEl.classList.add('active');
+        buttonEl.classList.add('active');
+      }
+    }
+
+    function markAnswered(index) {
+      const btn = document.getElementById('btn' + index);
+      if (btn && !btn.classList.contains('answered')) {
+        btn.classList.add('answered');
+      }
+    }
+
+    document.getElementById('test-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      finishTest();
+    });
+
+    function finishTest() {
+      let score = 0;
+      let answers = {};
+      const questions = document.querySelectorAll('.question');
+      questions.forEach((q, i) => {
+        const correct = q.dataset.answer;
+        const selected = q.querySelector('input[type="radio"]:checked');
+        if (selected) {
+          const val = selected.value;
+          answers[i + 1] = parseInt(val);
+          if (val === correct) {
+            score++;
+          }
+        }
+      });
+
+      fetch('/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: '{{ name }}',
+          subject: '{{ subject }}',
+          score: score,
+          answers: answers
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        window.location.href = data.redirect;
+      });
+    }
+
+    // Таймер 40 минут
+    let time = 40 * 60;
+    const timerDisplay = document.getElementById('timer');
+
+    function updateTimer() {
+      const minutes = Math.floor(time / 60);
+      const seconds = time % 60;
+      timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      time--;
+      if (time < 0) {
+        clearInterval(timerInterval);
+        alert("Уақытыңыз аяқталды. Тест аяқталады!");
+        finishTest();
+      }
+    }
+    const timerInterval = setInterval(updateTimer, 1000);
+
+    document.addEventListener('copy', e => { e.preventDefault(); alert("Мәтінді көшіруге болмайды!"); });
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('selectstart', e => e.preventDefault());
+  </script>
+</body>
+</html>

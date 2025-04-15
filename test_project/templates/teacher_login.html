@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <title>Мұғалімге кіру</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background: #e3f2fd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-box {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-box">
+    <h3 class="text-center text-primary mb-4">🧑‍🏫 Мұғалімге кіру</h3>
+
+    {% if error %}
+      <div class="alert alert-danger" role="alert">
+        {{ error }}
+      </div>
+    {% endif %}
+
+    <form method="POST">
+      <div class="mb-3">
+        <label class="form-label">Пәнді таңдаңыз</label>
+        <select name="subject" class="form-select" required>
+          <option value="Информатика">Информатика</option>
+          <option value="Қазақстан тарихы">Қазақстан тарихы</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Құпия сөз</label>
+        <input type="password" name="password" class="form-control" placeholder="Құпия сөз" required>
+      </div>
+
+      <div class="d-grid">
+        <button type="submit" class="btn btn-primary">Кіру</button>
+      </div>
+    </form>
+  </div>
+
+</body>
+</html>
