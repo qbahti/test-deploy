@@ -71,22 +71,24 @@
   <div class="main-container">
     
     <h1>Байқау сынағы</h1>
-    <form action="/start" method="post" onsubmit="return validateAccessCode()">
-      <label for="name">Атыңызды енгізіңіз:</label>
-      <input type="text" id="name" name="name" required>
-
-      <label for="subject">Пәнді таңдаңыз:</label>
-      <select id="subject" name="subject" required>
+    <form action="/start" method="post">
+      <label for="login">Логин:</label>
+      <input type="text" id="login" name="login" placeholder="Логин" required>
+    
+      <label for="password">Құпия код:</label>
+      <input type="password" id="password" name="password" placeholder="Пәнге арналған құпия код" required>
+    
+      <label for="subject">Пән:</label>
+      <select name="subject" required>
+        <option disabled selected>Пәнді таңдаңыз</option>
         {% for subj in subjects %}
           <option value="{{ subj }}">{{ subj }}</option>
         {% endfor %}
       </select>
-
-      <label for="access_code">Құпия код:</label>
-      <input type="password" id="access_code" name="access_code" required>
-
-      <button type="submit">Тестті бастау</button>
+    
+      <button type="submit">Бастау</button>
     </form>
+    
     <div style="text-align:right; margin-top: 20px;">
       <a href="/teacher/login" style="
         color: #1976d2;

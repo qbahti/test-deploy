@@ -20,11 +20,28 @@
       max-width: 400px;
       width: 100%;
     }
+    nav a {
+    color: #6a6a6a;
+    text-decoration: none;
+  }
+  nav a:hover {
+    text-decoration: underline;
+  }
   </style>
 </head>
 <body>
-
+ 
+  
+  
+  
   <div class="login-box">
+    <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+      <nav style="font-size: 16px; background: #f4f4f4; padding: 10px 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <a href="/" style="text-decoration: none; color: #555;">Басты бет</a> →
+        <span style="background: #3b82f6; color: white; padding: 2px 10px; border-radius: 6px; font-weight: 500;">Кіру</span>
+      </nav>
+    </div>
+    
     <h3 class="text-center text-primary mb-4">🧑‍🏫 Мұғалімге кіру</h3>
 
     {% if error %}

@@ -168,22 +168,23 @@
   <div class="container">
     <form id="test-form">
       <h2 style="text-align:center; font-size: 26px;">Бөлім: {{ subject }}</h2>
-      {% for q in questions.single %}
-        {% set q_index = loop.index0 %}
-        <div class="question {% if loop.index == 1 %}active{% endif %}" id="q{{ loop.index }}" data-answer="{{ q.answer }}">
-          <p class="question-title">Сұрақ №{{ loop.index }}</p>
-          <p>{{ q.question }}</p>
-          {% for option in q.options %}
-            <label>
-              <input type="radio" name="single_{{ q_index }}" value="{{ loop.index0 }}" onchange="markAnswered({{ q_index + 1 }})" {% if q_index == 0 %}required{% endif %}> {{ option }}
-            </label>
-          {% endfor %}
-          <div class="navigation">
-            <button type="button" onclick="showQuestion({{ loop.index - 1 }})" {% if loop.index == 1 %}disabled{% endif %}>Артқа</button>
-            <button type="button" onclick="showQuestion({{ loop.index + 1 }})" {% if loop.index == 30 %}disabled{% endif %}>Келесі сұрақ</button>
-          </div>
-        </div>
-      {% endfor %}
+      {% for q in questions %}
+  {% set q_index = loop.index0 %}
+  <div class="question {% if loop.index == 1 %}active{% endif %}" id="q{{ loop.index }}" data-answer="{{ q.answer }}">
+    <p class="question-title">Сұрақ №{{ loop.index }}</p>
+    <p>{{ q.question }}</p>
+    {% for option in q.options %}
+      <label>
+        <input type="radio" name="single_{{ q_index }}" value="{{ loop.index0 }}" onchange="markAnswered({{ q_index + 1 }})" {% if q_index == 0 %}required{% endif %}> {{ option.text if option.text is defined else option }}
+      </label>
+    {% endfor %}
+    <div class="navigation">
+      <button type="button" onclick="showQuestion({{ loop.index - 1 }})" {% if loop.index == 1 %}disabled{% endif %}>Артқа</button>
+      <button type="button" onclick="showQuestion({{ loop.index + 1 }})" {% if loop.index == 30 %}disabled{% endif %}>Келесі сұрақ</button>
+    </div>
+  </div>
+{% endfor %}
+
     </form>
   </div>
 

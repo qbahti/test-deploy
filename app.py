@@ -3,6 +3,8 @@ import json
 import os
 from datetime import datetime
 import uuid
+import gspread
+from google.oauth2.service_account import Credentials
 
 app = Flask(__name__)
 app.secret_key = 'any_secret_key'  # сессия үшін міндетті
@@ -15,12 +17,14 @@ SUBJECTS = ['Информатика', 'Қазақстан тарихы']
 def index():
     return render_template('index.html', subjects=SUBJECTS)
 
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+
 # Тестті бастау
 @app.route('/start', methods=['POST'])
 def start_test():
-    name = request.form.get('name')
+    login = request.form.get('login')
+    access_code = request.form.get('password')
     subject = request.form.get('subject')
-    access_code = request.form.get('access_code')
 
     valid_codes = {
         'Информатика': 'inf2024',
@@ -30,13 +34,38 @@ def start_test():
     if valid_codes.get(subject) != access_code:
         return render_template('index.html', error="Құпия код дұрыс емес!", subjects=SUBJECTS)
 
-    # Тест сұрақтарын жүктеу
-    filename = 'data/questions_informatika.json' if subject == 'Информатика' else 'data/questions_tarikh.json'
-    with open(f'./{filename}', 'r', encoding='utf-8') as f:
-        questions = json.load(f)
+    with open('data/students.json', 'r', encoding='utf-8') as f:
+        students = json.load(f)
 
-    return render_template('test.html', name=name, subject=subject, questions=questions)
+    if login not in students:
+        return render_template('index.html', error="Логин табылмады!", subjects=SUBJECTS)
 
+    student = students[login]
+    name = student['name']
+    grade = student['grade']
+    litera = student['litera']
+
+    if subject == 'Қазақстан тарихы':
+        with open('data/questions_tarikh.json', 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            raw_questions = data.get('single', [])
+            questions = []
+
+            for q in raw_questions:
+                options = [{"text": opt, "image": None} for opt in q['options']]
+                questions.append({
+                    "question": q['question'],
+                    "options": options,
+                    "answer": q['answer'],
+                    "image": None
+                })
+
+    else:
+        with open('data/questions_informatika.json', 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            questions = data.get('single', [])
+
+    return render_template('test.html', name=name, subject=subject, grade=grade, litera=litera, questions=questions)
 # Тест нәтижесін қабылдау
 @app.route('/submit', methods=['POST'])
 @app.route('/submit', methods=['POST'])
@@ -84,6 +113,7 @@ def submit():
 
     return jsonify({'redirect': '/result?name=' + name + '&subject=' + subject + '&score=' + str(score)})
 
+
 # Нәтиже беті
 @app.route('/result')
 def result():
@@ -128,7 +158,8 @@ def teacher_panel():
 
     test_files = os.listdir('uploaded_tests') if os.path.exists('uploaded_tests') else []
 
-    return render_template('teacher_panel.html', results=results, test_files=test_files)
+    return render_template('teacher_panel.html', current_page='panel', results=results, test_files=test_files)
+
 
 # Серверді іске қосу
 @app.route('/teacher/add_test', methods=['GET', 'POST'])
@@ -204,11 +235,10 @@ def add_test():
         # Жаңа сұрақтармен бірге қайта жазу
         with open(subject_file, 'w', encoding='utf-8') as f:
             json.dump(existing_data, f, ensure_ascii=False, indent=2)
+            
 
+    return render_template('add_test.html', current_page='add_test')
 
-        return redirect('/teacher/panel')
-
-    return render_template('add_test.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
