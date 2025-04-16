@@ -3,8 +3,6 @@ import json
 import os
 from datetime import datetime
 import uuid
-import gspread
-from google.oauth2.service_account import Credentials
 
 app = Flask(__name__)
 app.secret_key = 'any_secret_key'  # сессия үшін міндетті
